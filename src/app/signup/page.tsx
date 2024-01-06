@@ -69,7 +69,7 @@ export default function SignUpPage () {
             />
             <label className="text-2xl" htmlFor="password">password : </label>
             <input 
-                className="p-4 rounded-lg borger-gray-300 focus:outline-none focus:outline-gray-300 text-black"
+                className="p-4 border-none rounded-lg borger-gray-300 focus:outline-none focus:outline-gray-300 text-black"
                 id="password"
                 type="text"
                 placeholder="Password"
