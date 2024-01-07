@@ -44,7 +44,7 @@ export default function Login(){
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <h1 className="text-3xl">{loading? "precessing": "Login"}</h1>
+        <h1 className="text-3xl mb-7">{loading? "precessing": "Login"}</h1>
         <hr />
         <label className="text-2xl" htmlFor="email">Email : </label>
         <input 
@@ -64,7 +64,7 @@ export default function Login(){
             value={user.password}
             onChange={(e) => setUser({...user, password:e.target.value})}
         /> 
-        <button onClick={onLogin}  className="bg-blue-600 px-10 py-3 rounded-lg">{buttonDisable?"No Login": "Login"}</button> 
+        <button onClick={onLogin}  className="bg-blue-600 mt-5 px-10 py-3 rounded-lg">{buttonDisable?"No Login": "Login"}</button> 
         <Link href="/signup"> Sign up page</Link>
         </div>
     );
