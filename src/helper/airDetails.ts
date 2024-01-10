@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAirDetails = async (city: string) => {
-    const API = "741eca894b264c9f05a6554cc3ee54c5";
+    const API = {API_KEY};
     console.log(process.env.API_KEY2);
     try {
         const res = await axios.get(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API}`);
