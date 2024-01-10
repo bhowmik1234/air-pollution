@@ -4,6 +4,13 @@ import React, {use, useEffect} from "react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
+
+
+const notify = () => toast.error('Sign Up unSuccessfull.');
+const notify1 = () => toast.success('Sign up Successfully.');
+const notify3 = () => toast.error('Invalid email type');
+const notify4 = () => toast.error('Invalid password type');
 
 export default function SignUpPage () {
 
@@ -21,13 +28,19 @@ export default function SignUpPage () {
         // on click sign up button
         const onSignUp = async () =>{
             try{
-                setLoading(true);
-                const response = await axios.post("/api/users/signup", user);
-                console.log("response ddata: ", response);
-
-                router.push('/login');
+                if(user.email.endsWith("@gmail.com")){
+                    setLoading(true);
+                    const response = await axios.post("/api/users/signup", user);
+                    console.log("response ddata: ", response);
+                    notify1();
+                    router.push('/login');
+                }
+                else{
+                    notify3();
+                }
 
             }catch(error: any){
+                notify();
                 console.log(error.message);
             }finally{
                 setLoading(false);
@@ -80,6 +93,7 @@ export default function SignUpPage () {
                         onChange={(e) => setUser({...user, password:e.target.value})}
                     /> 
                     <button onClick={onSignUp} className="mt-5 bg-blue-600 px-10 py-3 rounded-lg hover:bg-blue-700">{buttonDisable ? "No sign up": "Sign Up"}</button> 
+                    <Toaster position="top-center" reverseOrder={false}/>
                     <Link href="/login" className="text-purple-400 mt-1 flex justify-center hover:text-cyan-300">Go to Login page</Link>
                 </div>
             </div>

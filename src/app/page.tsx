@@ -3,11 +3,59 @@ import Image from 'next/image'
 import Link from "next/link";
 import React, { useState } from "react";
 import { getAirDetails } from '@/helper/airDetails';
+import toast, { Toaster } from 'react-hot-toast';
 
+
+const notify = () => toast.error('City Name not Entered.');
+const notify1 = () => toast.success('City found.');
+const notify2 = () => toast.error('City Not found.');
 
 export default function Home() {
 
   const [city, setCity] = React.useState("");
+  const [det, setDet] = React.useState([
+    {
+      "name": "co",
+      "plant": ["Aloe Vera", "Snake Plant", "Chrysanthemum"],
+      "description": ""
+    },
+    {
+      "name": "no",
+      "plant": ["English Ivy", "Peace Lily", "Sansevieria trifasciata"],
+      "description": ""
+    },
+    {
+      "name": "no2",
+      "plant": ["Chrysanthemum ", "Ficus elastica", "Dypsis lutescens"],
+      "description": ""
+    },
+    {
+      "name": "o3",
+      "plant": ["Zamioculcas zamiifolia (ZZ plant)", "Golden Pothos", "Aglaonema"],
+      "description": ""
+    },
+    {
+      "name": "so2",
+      "plant": ["Ficus benjamina", "Tiger bark", "Dracaena"],
+      "description": ""
+    },
+    {
+      "name": "pm25",
+      "plant": ["Spider Plant", "Boston Fern", "Bamboo Palm"],
+      "description": ""
+    },
+    {
+      "name": "pm10",
+      "plant": ["Areca Palm", "Rubber Plant", "Moth Orchid"],
+      "description": ""
+    },
+    {
+      "name": "nh3",
+      "plant": ["No plants."],
+      "description": "Plants are generally not known for their ability to specifically absorb ammonia (NH3) from the air. Using air purifiers with activated carbon filters. it's recommended to explore specific air purification technologies or consult with experts in indoor air quality for tailored solutions."
+    },
+  ]);
+
   const [co, setCo] = React.useState("0");
   const [nh3, setNh3] = React.useState("0");
   const [no, setNo] = React.useState("0");
@@ -17,16 +65,30 @@ export default function Home() {
   const [pm10, setPm10] = React.useState("0");
   const [so2, setSo2] = React.useState("0");
 
+  // button function
   const search = async () => {
-    const detail = await getAirDetails(city);
-    setCo(detail.co);
-    setNh3(detail.nh3);
-    setNo(detail.no);
-    setNo2(detail.no2);
-    setO3(detail.o3);
-    setPm25(detail.pm2_5);
-    setPm10(detail.pm10);
-    setSo2(detail.so2);
+    if(city === "")
+    {
+      notify();
+    }
+    else{
+      try{
+        const detail = await getAirDetails(city);
+        setCo(detail.co);
+        setNh3(detail.nh3);
+        setNo(detail.no);
+        setNo2(detail.no2);
+        setO3(detail.o3);
+        setPm25(detail.pm2_5);
+        setPm10(detail.pm10);
+        setSo2(detail.so2);
+        notify1();
+      }catch(error:any)
+      {
+        notify2();
+      }
+      
+    }
   }
   return (
     <main className='flex flex-col'>
@@ -34,6 +96,7 @@ export default function Home() {
       <nav className='flex p-5 h-20 justify-between'>
         <Link href='/' className='text-4xl'>Logo</Link>
         <div className='flex gap-10'>
+          <Link href='/' className='text-lg m-auto'>Home</Link>
           <Link href='/profile' className='text-lg m-auto'>Profile</Link>
           <button className='p-2 rounded border hover:bg-zinc-600'>Let's connect</button>
         </div>
@@ -54,6 +117,7 @@ export default function Home() {
             onChange={(e) => { setCity(e.target.value) }}
           />
           <button onClick={search} className="mt-5 bg-blue-600 px-10 py-3 rounded-lg hover:bg-blue-700">Search</button>
+          <Toaster position="top-center" reverseOrder={false}/>
         </div>
 
 
@@ -80,7 +144,7 @@ export default function Home() {
                 <h4>NO : <span className={
                   (no >= '0' && no <= '10') ? 'text-green-600' :
                     (no >= '11' && no <= '20') ? 'text-lime-600' :
-                      (no >= '21' && no <= '50') ? 'text-red-300' :
+                      (no > '20' && no <= '50') ? 'text-red-300' :
                         (no >= '51' && no <= '100') ? 'text-amber-500' :
                           (no >= '101' && no <= '200') ? 'text-red-500' :
                             (no >= '201') ? 'text-orange-600' : ''
@@ -150,17 +214,70 @@ export default function Home() {
             <div className='flex justify-center p-2 font-mono text-lg  h-full bg-zinc-800 rounded-md'>
               Solution
             </div>
-            
-            <div className='bg-zinc-900 rounded-md h-72 w-full mt-2 p-4 overflow-auto'>
-              <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>hello</div>
-              <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>hello</div>
-              <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>hello</div>
-              
+
+            <div className='bg-zinc-900 rounded-md h-72 w-full mt-2 ps-4 pe-12 overflow-auto'>
+              {pm25 >= "61" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain Pm<sub>2.5</sub> Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[5].plant[0]} | {det[5].plant[1]} | {det[5].plant[2]}</p>
+                </div> : ''
+              }
+
+              {pm10 >= "101" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain Pm<sub>10</sub> Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[6].plant[0]} | {det[6].plant[1]} | {det[6].plant[2]}</p>
+                </div> : ''
+              }
+
+              {co >= "2100" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain CO Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[0].plant[0]} | {det[0].plant[1]} | {det[0].plant[2]}</p>
+                </div> : ''
+              }
+
+              {no >= "20" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain NO Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[1].plant[0]} | {det[1].plant[1]} | {det[1].plant[2]}</p>
+                </div> : ''
+              }
+
+              {so2 >= "51" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain SO<sub>2</sub> Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[4].plant[0]} | {det[4].plant[1]} | {det[4].plant[2]}</p>
+                </div> : ''
+              }
+
+              {o3 >= "101" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain O<sub>3</sub> Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[3].plant[0]} | {det[3].plant[1]} | {det[3].plant[2]}</p>
+                </div> : ''
+              }
+
+              {no2 >= "81" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain NO<sub>2</sub> Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[2].plant[0]} | {det[2].plant[1]} | {det[2].plant[2]}</p>
+                </div> : ''
+              }
+
+              {nh3 >= "401" ?
+                <div className='py-2 px-1 bg-zinc-800 rounded-md w-full m-2'>
+                  <h1 className='text-stone-300 font-mono text-xl'>To maintain NH<sub>3</sub> Conc.  <span className='text-lime-400'>Grow</span></h1>
+                  <p className='text-emerald-400 text-lg font-serif'>{det[7].plant[0]}</p>
+                  <p className='text-rose-500 text-lg font-serif'>{det[7].description}</p>
+                </div> : ''
+              }
+
+
             </div>
           </div>
 
         </div>
-        {/* how to improve air quality if it has{co:3791, no:29.5, no2:69.23, o3:0.01, so2:12.99, pm25:379.35, pm10:499.91, nh3:27.87} */}
       </section>
     </main>
   )

@@ -1,34 +1,59 @@
 "use client"
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link"
 
 export default function UserProfile() {
 
     const router = useRouter();
-    const [data, setData] = useState("nothing");
-    const logout = async () =>{
-        try{    
+    const [username, setUsername] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [id, setId] = React.useState("");
+
+    const logout = async () => {
+        try {
             await axios.get('/api/users/logout');
             router.push('/login');
-        }catch(error: any){
+        } catch (error: any) {
             console.log(error.message);
         }
     };
 
-    const userDetails = async () =>{
+    const userDetails = async () => {
         const user = await axios.get('/api/users/me');
         console.log(user);
-        setData(user.data.data._id);
+        setId(user.data.data._id);
+        setUsername(user.data.data.username);
+        setEmail(user.data.data.email);
     };
 
+    useEffect(() =>{
+        userDetails();
+    }, []);
+
     return (
-        <section className="profile bg-black-500 flex flex-col min-h-screen justify-center items-center">
-            <h1 className="  text-3xl">it a profile section</h1>
-            <h2 className="p-3 bg-green-500 rounded"> {data === 'nothing' ? "Nothing" : <Link href={`/profile/${data}`}>{data}</Link>}</h2>
-            <button className="p-3 mt-5 bg-blue-600 rounded-md" onClick={logout}>Log Out</button>
-            <button className="p-3 mt-5 bg-purple-800 rounded-md" onClick={userDetails}>user Details</button>
-        </section>
+
+
+        <main className='flex flex-col'>
+            {/* navbar */}
+            <nav className='flex p-5 h-20 justify-between'>
+                <Link href='/' className='text-4xl'>Logo</Link>
+                <div className='flex gap-10'>
+                    <Link href='/' className='text-lg m-auto'>Home</Link>
+                    <Link href='/profile' className='text-lg m-auto'>Profile</Link>
+                    <button className='p-2 rounded border hover:bg-fuchsia-700' onClick={logout}>Logout</button>
+                </div>
+            </nav>
+            <hr />
+            <section className="bg-black-500 pt-36 flex items-center justify-center flex-col">
+                <h1 className=" mb-5 text-4xl font-mono">User Profile</h1>
+                <div className="bg-zinc-800 rounded-lg p-7">
+                    <h2 className="p-3 bg-green-500 rounded"> {id === 'nothing' ? "Nothing" : <Link href={`/profile/${id}`}>{id}</Link>}</h2>
+                    <h2 className="text-xl text-stone-300 font-sans my-2">Username: {username}</h2>
+                    <h2 className="text-xl text-stone-300 font-sans">Email : {email}gmail.com</h2>
+                </div>
+            </section>
+        </main>
     );
 }

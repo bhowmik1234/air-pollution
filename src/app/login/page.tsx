@@ -3,6 +3,11 @@ import React, {useEffect} from "react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
+
+
+const notify = () => toast.error('Invalid Username and password');
+const notify1 = () => toast.success('User found.');
 
 export default function Login(){
 
@@ -20,10 +25,11 @@ export default function Login(){
             setLoading(true);
             const response = await axios.post('/api/users/login', user);
             console.log("response data", response);
-
+            notify1();
             router.push('/profile');
 
         }catch(error:any){
+            notify();
             console.log(error.message);
         }finally{
             setLoading(false);
@@ -67,7 +73,8 @@ export default function Login(){
                     onChange={(e) => setUser({...user, password:e.target.value})}
                 /> 
                 <button onClick={onLogin}  className="mt-5 bg-blue-600 px-10 py-3 rounded-lg hover:bg-blue-700">{buttonDisable?"No Login": "Login"}</button> 
-                <Link href="/login" className="text-purple-400 mt-1 flex justify-center hover:text-cyan-300">Go to SignUp page</Link>
+                <Toaster position="top-center" reverseOrder={false}/>
+                <Link href="/signup" className="text-purple-400 mt-1 flex justify-center hover:text-cyan-300">Go to SignUp page</Link>
             </div>
         </div>
     );
